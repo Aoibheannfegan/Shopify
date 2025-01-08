@@ -1,0 +1,46 @@
+
+<details>
+    <summary>{{ block.settings.title }}</summary>
+    <p>{{ block.settings.content }}</p>
+</details>
+
+{% assign discounts = shop.metaobjects.discounts.values %}
+
+{% if discounts.count > 0 %}
+  <ul>
+    {% for discount in discounts %}
+      <li>
+        <h3>{{ discount.code.value }}</h3>
+        <p>{{ discount.summary }}</p>
+        <p>
+          Start Date: {{ discount.start_date | date: "%B %d, %Y" }}<br>
+          End Date: {% if discount.end_date %}{{ discount.end_date | date: "%B %d, %Y" }}{% else %}No end date{% endif %}
+        </p>
+      </li>
+      <a href="{{ discount.system.url }}" class="button button-primary herb-button">Order Now</a>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No discounts available.</p>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Discounts",
+    "target": "section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Current Promos"
+        },
+        {
+            "type": "richtext",
+            "id": "content",
+            "label": "Content",
+            "default": "<p>Describe</p>"
+        }
+    ]
+}
+{% endschema %}

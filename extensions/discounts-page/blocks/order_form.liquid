@@ -1,0 +1,63 @@
+<script src="{{ 'generate-discounts.js' | asset_url }}" defer="defer"></script> 
+<script src="{{ 'add-to-cart.js' | asset_url }}" defer="defer"></script> 
+
+<details>
+    <summary>{{ block.settings.title }}</summary>
+    <p>{{ block.settings.content }}</p>
+</details>
+
+{% assign discount_slug = request.path | split: '/' | last | upcase %}
+{% assign discount = shop.metaobjects.discounts.values | where: "code", discount_slug | first %}
+{% if discount %}
+    <p>{{ discount.code }}</p>
+  <p>{{ discount.summary }}</p>
+  <p>
+    Start Date: {{ discount.start_date | date: "%B %d, %Y" }}<br>
+    End Date: {% if discount.end_date %}{{ discount.end_date | date: "%B %d, %Y" }}{% else %}No end date{% endif %}
+  </p>
+  <p>Minimum Spend: ${{ discount.minimum }}</p>
+  <div id="discount-data" 
+    data-minimum="{{ discount.minimum | default: '0' }}"></div>
+  <p>Amount to Reach Minimum: <span id="amount-to-minimum">0.00</span></p>
+  <p>Order Value Before Discount: <span id="order-value">0.00</span></p>
+  <p>Order Value After Discount: <span id="order-value-after">0.00</span></p>
+  <p>Total Savings: <span id="savings">0.00</span></p>
+  <h4>Applicable Products:</h4>
+  <form id="custom-order-form">
+    <ul id="product-list">
+        {% for product in discount.products.value %}
+        {% assign first_variant = product.variants.first %}
+        <li data-product-id="{{ first_variant.id }}" data-product-price="{{ product.price }}">
+            <label>
+            {{ product.title }} - {{ product.price | money }}
+            <input type="number" class="product-quantity" min="0" step="1" placeholder="Quantity">
+            </label>
+        </li>
+        {% endfor %}
+    </ul>
+    <button type="button" id="add-to-cart-button">Add to Cart</button>
+  </form>
+{% else %}
+  <p>No discount found for this URL.</p>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Order Form",
+    "target": "section",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Order Form"
+        },
+        {
+            "type": "richtext",
+            "id": "content",
+            "label": "Content",
+            "default": "<p>Order Form Bio</p>"
+        }
+    ]
+}
+{% endschema %}

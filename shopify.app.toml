@@ -1,0 +1,37 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "75702e385e5170323cbf9a77ee7f78cc"
+name = "view-discounts"
+handle = "view-discounts"
+application_url = "https://advertisers-lg-fee-ten.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products, read_discounts"
+
+[auth]
+redirect_urls = [
+  "https://advertisers-lg-fee-ten.trycloudflare.com/auth/callback",
+  "https://advertisers-lg-fee-ten.trycloudflare.com/auth/shopify/callback",
+  "https://advertisers-lg-fee-ten.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-10"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+[pos]
+embedded = false
+
+[build]
+dev_store_url = "irishlawnservices.myshopify.com"
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
